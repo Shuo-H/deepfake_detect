@@ -1,10 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
-# pyre-strict
 # pyre-ignore-all-errors[2,3]
-from typing import Any, Dict, Iterable, Iterator, Optional, Tuple
-import inspect
+from typing import Any, Dict, Iterable, Iterator, Tuple
+
 from tabulate import tabulate
+
 
 class Registry(Iterable[Tuple[str, Any]]):
     """
@@ -40,18 +39,19 @@ class Registry(Iterable[Tuple[str, Any]]):
         self._name: str = name
         self._obj_map: Dict[str, Any] = {}
 
+
     def _do_register(self, name: str, obj: Any) -> None:
         assert (
             name not in self._obj_map
-        ), "An object named '{}' was already registered in '{}' registry!".format(name, self._name)
+        ), "An object named '{}' was already registered in '{}' registry!".format(
+            name, self._name
+        )
         self._obj_map[name] = obj
 
-    # pyre-fixme[2]: Parameter must be annotated.
-    def register(self, obj=None) -> Optional[Callable]:
+    def register(self, obj: Any = None) -> Any:
         """
         Register the given object under the the name `obj.__name__`.
-        Can be used as either a decorator or not.
-        See docstring of this class for usage.
+        Can be used as either a decorator or not. See docstring of this class for usage.
         """
         if obj is None:
             # used as a decorator
@@ -63,13 +63,9 @@ class Registry(Iterable[Tuple[str, Any]]):
             return deco
 
         # used as a function call
-        if inspect.isclass(obj) or inspect.isfunction(obj):
-            name = obj.__name__
-            self._do_register(name, obj)
-        else:
-            raise TypeError(
-                "register() must be called with a class or function, but got {}".format(type(obj))
-            )
+        name = obj.__name__
+        self._do_register(name, obj)
+
 
     def get(self, name: str) -> Any:
         ret = self._obj_map.get(name)
@@ -78,6 +74,7 @@ class Registry(Iterable[Tuple[str, Any]]):
                 "No object named '{}' found in '{}' registry!".format(name, self._name)
             )
         return ret
+
 
     def __contains__(self, name: str) -> bool:
         return name in self._obj_map

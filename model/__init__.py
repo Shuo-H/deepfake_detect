@@ -2,7 +2,7 @@
 import importlib
 import pkgutil
 
-from ..model.registry import Registry
+from registry import Registry
 
 
 DETECTOR_REGISTRY = Registry("BACKBONE")

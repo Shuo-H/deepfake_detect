@@ -44,7 +44,7 @@ class DFArena(BaseDetector):
         audio = audio.mean(0) if audio.shape[0] > 1 else audio[0]  # To mono
 
         # Inference
-        results = self.pipe(waveform.to(self.config.device))
+        results = self.pipe(audio.to(self.config.device))
         score = next(r['score'] for r in results if r['label'] == 'bonafide')  # Assuming 'bonafide' is real
         label = 'real' if score > self.config.threshold else 'fake'
 

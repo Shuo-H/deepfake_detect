@@ -20,6 +20,7 @@ def main():
     config_class = DETECTOR_CONFIGS_REGISTER.get(model_cfg.config_class)
     if config_class is None:
             raise ValueError(f"Config class not registered: {model_cfg.config_class}")
+    import pdb; ipdb.set_trace()
     valid_model_cfg = config_class(model_cfg)
     
     # Build model
