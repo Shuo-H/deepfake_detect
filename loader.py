@@ -5,10 +5,13 @@ This module provides functions to load audio files from various sources,
 including directories and Gradio interfaces.
 """
 import os
+import logging
 from typing import Generator, Tuple, Optional
 
 import soundfile as sf
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 # Supported audio file extensions
 AUDIO_EXTENSIONS = {
@@ -40,8 +43,9 @@ def load_with_directory(directory: str) -> Generator[Tuple[str, np.ndarray, int]
                 audio_path = os.path.join(dirpath, filename)
                 try:
                     audio, sr = sf.read(audio_path)
+                    logger.debug(f"Successfully loaded {audio_path} (shape: {audio.shape}, sample rate: {sr} Hz)")
                     yield audio_path, audio, sr
                 except Exception as e:
                     # Log error but continue processing other files
-                    print(f"Error loading {audio_path}: {e}")
+                    logger.error(f"Error loading {audio_path}: {e}", exc_info=True)
                     continue

@@ -1,5 +1,8 @@
 # gradio_app.py
+import logging
 import gradio as gr
+
+logger = logging.getLogger(__name__)
 
 def launch_gradio(model):
     """
@@ -8,12 +11,19 @@ def launch_gradio(model):
     """
     def detect_audio(audio):
         if audio is None:
+            logger.warning("No audio uploaded")
             return "No audio uploaded."
         try:
+            logger.info(f"Processing audio file: {audio}")
             result = model.detect(audio)  # audio is temp filepath; validation inside detect()
+            logger.info(f"Detection result: {result}")
             return f"Label: {result['label']}, Score: {result['score']:.4f}"
         except ValueError as e:
+            logger.error(f"Validation error during detection: {e}", exc_info=True)
             return f"Error: {str(e)}"  # Graceful error for invalid audio
+        except Exception as e:
+            logger.error(f"Unexpected error during detection: {e}", exc_info=True)
+            return f"Error: {str(e)}"
 
     demo = gr.Interface(
         fn=detect_audio,
