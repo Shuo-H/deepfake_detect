@@ -7,7 +7,7 @@ from .base import BaseDetector
 from . import DETECTOR_REGISTRY, DETECTOR_CONFIGS_REGISTER
 
 @DETECTOR_CONFIGS_REGISTER.register()
-class DFArenaConfig(BaseModel):  # Model-specific config
+class DFArenaConfig(BaseModel):  # Model-specific config        
     model_id: str = Field('Speech-Arena-2025/DF_Arena_500M_V_1', description="Hugging Face model ID")
     device: str = Field('cpu', description="Device to run the model on")
     resample_rate: int = Field(16000, description="Resample rate for audio")
