@@ -4,8 +4,7 @@ import sys
 from omegaconf import OmegaConf
 
 from gradio_app import launch_gradio
-from model.model_zoo import model_hf_arena
-from model import CONFIGS, MODELS
+from model import DETECTOR_REGISTRY, DETECTOR_CONFIGS_REGISTER
 from loader import load_with_directory
 
 def main():
@@ -18,13 +17,13 @@ def main():
     else:
         raise FileNotFoundError(f"Model config not found: {model_yaml_path}")
 
-    config_class = CONFIGS.get(model_cfg.config_class)
+    config_class = DETECTOR_CONFIGS_REGISTER.get(model_cfg.config_class)
     if config_class is None:
             raise ValueError(f"Config class not registered: {model_cfg.config_class}")
-    valid_model_cfg = config_class(**model_cfg)
+    valid_model_cfg = config_class(model_cfg)
     
     # Build model
-    model = MODELS.build({'type': model_cfg.model_class, 'config': valid_model_cfg})
+    model = DETECTOR_REGISTRY.build({'type': model_cfg.model_class, 'config': valid_model_cfg})
 
     # Handle load_type (as before)
     if cfg.load_type == 'directory':

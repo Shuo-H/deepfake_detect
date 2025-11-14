@@ -2,12 +2,11 @@
 import torchaudio
 from transformers import pipeline
 from pydantic import Field, BaseModel, field_validator
-from typing import Literal
 
-from ..base import BaseDetector
-from .. import CONFIGS, MODELS
+from .base import BaseDetector
+from . import DETECTOR_REGISTRY, DETECTOR_CONFIGS_REGISTER
 
-@CONFIGS.register_module()
+@DETECTOR_CONFIGS_REGISTER.register()
 class DFArenaConfig(BaseModel):  # Model-specific config
     model_id: str = Field('Speech-Arena-2025/DF_Arena_500M_V_1', description="Hugging Face model ID")
     device: str = Field('cpu', description="Device to run the model on")
@@ -31,7 +30,7 @@ class DFArenaConfig(BaseModel):  # Model-specific config
             raise ValueError("Threshold must be between 0.0 and 1.0")
         return v
 
-@MODELS.register_module()
+@DETECTOR_REGISTRY.register()
 class DFArena(BaseDetector):
     def __init__(self, config: DFArenaConfig):
         super().__init__()
@@ -41,8 +40,8 @@ class DFArena(BaseDetector):
     def detect(self, audio, sr) -> dict:
         # Load and preprocess audio (resample to 16kHz)
         if sr != self.config.resample_rate:
-            waveform = torchaudio.transforms.Resample(sr, self.config.resample_rate)(waveform)
-        waveform = waveform.mean(0) if waveform.shape[0] > 1 else waveform[0]  # To mono
+            audio = torchaudio.transforms.Resample(sr, self.config.resample_rate)(audio)
+        audio = audio.mean(0) if audio.shape[0] > 1 else audio[0]  # To mono
 
         # Inference
         results = self.pipe(waveform.to(self.config.device))
