@@ -1,0 +1,6 @@
+# configs/df_arena.yaml
+config_class: DFArenaConfig  # Matches registered config class
+model_class: DFArena # Matches registered model class
+model_id: Speech-Arena-2025/DF_Arena_500M_V_1 # HuggingFace model ID
+device: cpu  # Or cpu
+resample_rate: 16000

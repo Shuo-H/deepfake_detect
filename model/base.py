@@ -1,14 +1,13 @@
 # model/base.py
+import torch.nn as nn
 
-from abc import ABC, abstractmethod
-import numpy as np
+class BaseDetector(nn.Module):
+    def __init__(self):
+        super().__init__()
 
-class BaseModel(ABC):
-    """
-    """
-    
-    @abstractmethod
-    def predict(self, audio: np.ndarray, sr: int) -> dict:
+    def detect(self, audio, sr) -> dict:
         """
+        Process a single audio file and return {'label': 'real' or 'fake', 'score': float}
+        Subclasses implement the logic.
         """
-        pass
+        raise NotImplementedError("Subclasses must implement detect()")

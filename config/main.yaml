@@ -1,0 +1,4 @@
+# main.yaml (no interpolation in defaults)
+model_name: df_arena  # Central management: switch models here
+load_type: directory  # directory or gradio
+input_dir: samples/
