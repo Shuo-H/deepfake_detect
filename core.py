@@ -10,12 +10,10 @@ from logger import setup_logging
 
 def main(args):
 
-    setup_logging(log_filename="debug.log")
-    # ----------------------------
+    if args.debug:
+        setup_logging(log_filename="debug.log")  # Log to console only
 
     logging.info("--- Script execution started ---")
-    
-    # load detector
     logging.info(f"Loading model: {args.model_name}")
     # detector = model.get_model(args.model_name)
     
@@ -43,17 +41,10 @@ if __name__ == "__main__":
         help="Loading method (default: directory)"
     )
     
-    # --- CHANGED: Fixed boolean argument ---
-    # This creates a flag '--no-log'.
-    # By default, 'debug' is True.
-    # If the user runs with '--no-log', it sets 'debug' to False.
     parser.add_argument(
-        '--no-log',
-        dest='debug',             # Store the value in 'args.debug'
-        action='store_false',     # If flag is present, store False
-        help="Disables debug mode and enables file logging"
+        '--debug',
+        type=bool,
+        default=True
     )
-    parser.set_defaults(debug=True) # Default value for 'debug' is True
-    # ---------------------------------------
 
     main(parser.parse_args())
