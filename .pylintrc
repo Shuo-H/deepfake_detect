@@ -1,0 +1,29 @@
+[MASTER]
+# Python code to execute, usually for sys.path manipulation such as pygtk.require().
+init-hook='import sys; sys.path.append(".")'
+
+[MESSAGES CONTROL]
+# Disable specific warnings
+disable=
+    missing-docstring,
+    too-few-public-methods,
+    too-many-arguments,
+    too-many-instance-attributes,
+    import-error
+
+[FORMAT]
+# Maximum number of characters on a single line.
+max-line-length=100
+
+[BASIC]
+# Good variable names which should always be accepted
+good-names=i,j,k,ex,Run,_,id,pk,db,cfg
+
+[DESIGN]
+# Maximum number of arguments for function / method
+max-args=7
+# Maximum number of attributes for a class
+max-attributes=12
+# Maximum number of boolean expressions in an if statement
+max-bool-expr=5
+

@@ -181,9 +181,16 @@ def main():
             server_port = cfg.get('server_port', 7860)
             share = cfg.get('share', False)
             launch_gradio(model, server_name, server_port, share)
+        
+        elif load_type == 'websocket':
+            logger.info("Launching WebSocket server...")
+            from websocket_server import launch_websocket_server
+            websocket_host = cfg.get('websocket_host', '0.0.0.0')
+            websocket_port = cfg.get('websocket_port', 8765)
+            launch_websocket_server(websocket_host, websocket_port, logging.INFO)
             
         else:
-            raise ValueError(f"Unknown load_type: {load_type}. Must be 'directory' or 'gradio'")
+            raise ValueError(f"Unknown load_type: {load_type}. Must be 'directory', 'gradio', or 'websocket'")
         
         logger.info("Application finished")
         
