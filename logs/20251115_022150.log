@@ -1,0 +1,8 @@
+2025-11-15 02:21:50,156 - __main__ - INFO - Starting deepfake detection application
+2025-11-15 02:21:50,157 - __main__ - INFO - Loading main configuration from config/main.yaml
+2025-11-15 02:21:50,159 - __main__ - INFO - Loading model configuration from config/df_arena.yaml
+2025-11-15 02:21:50,161 - __main__ - INFO - Initializing model: DFArena with config: DFArenaConfig
+2025-11-15 02:21:50,161 - __main__ - INFO - Building model...
+2025-11-15 02:22:00,260 - __main__ - INFO - Model built successfully
+2025-11-15 02:22:00,261 - __main__ - INFO - Load type: gradio
+2025-11-15 02:22:00,261 - __main__ - INFO - Launching Gradio interface...

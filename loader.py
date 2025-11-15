@@ -6,7 +6,7 @@ including directories and Gradio interfaces.
 """
 import os
 import logging
-from typing import Generator, Tuple, Optional
+from typing import Generator, Tuple
 
 import soundfile as sf
 import numpy as np

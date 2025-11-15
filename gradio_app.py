@@ -1,35 +1,52 @@
-# gradio_app.py
-import logging
 import gradio as gr
+import numpy as np
+from typing import Optional
 
-logger = logging.getLogger(__name__)
 
-def launch_gradio(model):
+def launch_gradio(model,
+                server_name: str = "0.0.0.0",
+                server_port: int = 7860,
+                share: bool = False):
+    # Create Gradio interface
+    title = "🎤 Audio Anti-Spoofing Detection"
+    description = """
+    Upload an audio file to detect if it's a **spoof (deepfake)** or **bonafide (real)** audio.
+    
+    **Model**: Speech-Arena-2025/DF_Arena_500M_V_1
+    
+    **How it works**:
+    - The model analyzes audio features to detect spoofing attacks
+    - Returns confidence scores for both spoof and bonafide classes
+    - Higher spoof score indicates a higher likelihood of deepfake/spoofing
+    
+    **Supported formats**: WAV, MP3, M4A, FLAC, OGG (will be resampled to 16kHz)
     """
-    Launches Gradio app with the given model. Handles audio upload and detection.
-    Model's detect() will validate audio internally.
-    """
-    def detect_audio(audio):
+
+    def detect_audio(audio: Optional[np.ndarray]):
+        """Wrapper function for Gradio"""
         if audio is None:
-            logger.warning("No audio uploaded")
-            return "No audio uploaded."
-        try:
-            logger.info(f"Processing audio file: {audio}")
-            result = model.detect(audio)  # audio is temp filepath; validation inside detect()
-            logger.info(f"Detection result: {result}")
-            return f"Label: {result['label']}, Score: {result['score']:.4f}"
-        except ValueError as e:
-            logger.error(f"Validation error during detection: {e}", exc_info=True)
-            return f"Error: {str(e)}"  # Graceful error for invalid audio
-        except Exception as e:
-            logger.error(f"Unexpected error during detection: {e}", exc_info=True)
-            return f"Error: {str(e)}"
-
-    demo = gr.Interface(
+            return "❌ Please upload an audio file"
+        result = model.detect(audio, sr=16000)
+        result = model.format_result(result)
+        return result
+    
+    iface = gr.Interface(
         fn=detect_audio,
-        inputs=gr.Audio(type="filepath", label="Upload Audio (WAV/MP3, 16kHz mono recommended)"),
-        outputs="text",
-        title="Deepfake Audio Detector",
-        description="Upload an audio file for deepfake detection."
+        inputs=gr.Audio(
+            type="numpy",
+            label="Upload Audio File",
+            sources=["upload", "microphone"]
+        ),
+        outputs=gr.Markdown(label="Detection Result"),
+        title=title,
+        description=description,
+        examples=None,
+        theme=gr.themes.Soft(),
+        allow_flagging="never"
     )
-    demo.launch(share=True)  # share=True for public link if needed
+    
+    iface.launch(
+        server_name=server_name,
+        server_port=server_port,
+        share=share
+    )

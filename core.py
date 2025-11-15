@@ -11,7 +11,7 @@ from logger import setup_logging
 
 def main():
     # Setup logging first
-    setup_logging(log_filename="debug.log", log_level=logging.INFO)
+    log_file = setup_logging(log_dir="logs", log_level=logging.INFO)
     logger = logging.getLogger(__name__)
     
     logger.info("Starting deepfake detection application")
@@ -55,7 +55,11 @@ def main():
         logger.info(f"Processed {processed_count} audio file(s)")
     elif cfg.load_type == 'gradio':
         logger.info("Launching Gradio interface...")
-        launch_gradio(model)
+        try:
+            launch_gradio(model, cfg.get('server_name'), cfg.get('server_port'), cfg.get('share'))
+        except Exception as e:
+            logger.error(f"Failed to launch Gradio interface: {e}", exc_info=True)
+            raise
     else:
         logger.error(f"Unknown load_type: {cfg.load_type}")
         raise ValueError(f"Unknown load_type: {cfg.load_type}")

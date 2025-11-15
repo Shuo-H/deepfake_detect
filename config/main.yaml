@@ -1,4 +1,7 @@
 # main.yaml (no interpolation in defaults)
 model_name: df_arena  # Central management: switch models here
-load_type: directory  # directory or gradio
+load_type: gradio  # directory or gradio
 input_dir: samples/
+server_name: 0.0.0.0
+server_port: 7860
+share: false

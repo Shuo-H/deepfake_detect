@@ -77,5 +77,15 @@ class DFArena(BaseDetector):
             results: {'label': 'spoof', 'logits': [[1.5515458583831787, -1.2254822254180908]], 'score': 0.9414217472076416, 'all_scores': {'spoof': 0.9414217472076416, 'bonafide': 0.05857823044061661}}
             dict: Detection result with keys 'label' and 'score'.
         '''
+        # mono
+        # resample if needed
+        if sr != self.config.resample_rate:
+            resampler = torchaudio.transforms.Resample(orig_freq=sr, new_freq=self.config.resample_rate)
+            if len(audio.shape) == 1:
+                audio = audio.unsqueeze(0)  # add channel dim
+            audio = resampler(audio)
+            audio = audio.squeeze(0)  # remove channel dim if single channel
+            sr = self.config.resample_rate
+        import pdb ; pdb.set_trace()
         results = self.pipe(audio)
         return self._format_result(results)
