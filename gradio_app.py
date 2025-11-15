@@ -1,6 +1,12 @@
+"""
+Gradio web interface for deepfake audio detection.
+
+This module provides a Gradio-based web UI for uploading and detecting
+deepfake audio files.
+"""
 import gradio as gr
 import numpy as np
-from typing import Optional
+from typing import Optional, Tuple
 
 
 def launch_gradio(model,
@@ -22,13 +28,26 @@ def launch_gradio(model,
     **Supported formats**: WAV, MP3, M4A, FLAC, OGG (will be resampled to 16kHz)
     """
 
-    def detect_audio(audio: Optional[np.ndarray]):
-        """Wrapper function for Gradio"""
+    def detect_audio(audio: Optional[Tuple[int, np.ndarray]]):
+        """
+        Wrapper function for Gradio audio detection.
+        
+        Args:
+            audio: Tuple of (sample_rate, audio_data) from Gradio, or None
+        
+        Returns:
+            Formatted detection result string
+        """
         if audio is None:
             return "❌ Please upload an audio file"
-        result = model.detect(audio, sr=16000)
-        result = model.format_result(result)
-        return result
+        
+        # Gradio Audio component returns (sample_rate, audio_data)
+        sample_rate, audio_data = audio
+        
+        # Run detection
+        result = model.detect(audio_data, sample_rate)
+        formatted_result = model.format_result(result)
+        return formatted_result
     
     iface = gr.Interface(
         fn=detect_audio,
